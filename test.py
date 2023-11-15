@@ -1,54 +1,39 @@
-def parse_hand(hand_string):
-    """
-    Parses the hand string into a more manageable format.
-    For example, "123456m123s12355p" would be parsed into a dictionary
-    with counts of each tile.
-    """
-    tiles = {'m': [], 's': [], 'p': []}
-    current_type = ''
-    for char in hand_string:
-        if char in 'msp':
-            current_type = char
-        elif current_type:  # Add the number only if a type has been set
-            tiles[current_type].append(int(char))
-    return tiles
-
-def is_valid_group(group):
-    """
-    Checks if a group of tiles is a valid sequence (chii) or triplet (pon).
-    """
-    if len(group) == 3:
-        if all(tile == group[0] for tile in group):  # All tiles are the same
-            return True
-        if sorted(group) == list(range(min(group), max(group) + 1)):  # Sequential tiles
-            return True
-    return False
-
-def can_win(hand):
-    """
-    Checks if the given hand can win. This is a simplified check and does not cover all cases.
-    """
-    # Parse the hand
-    parsed_hand = parse_hand(hand)
-    
-    # Check for 4 groups and a pair
-    groups = []
-    pair_found = False
-    for suit, tiles in parsed_hand.items():
-        tiles.sort()
-        i = 0
-        while i < len(tiles):
-            if i <= len(tiles) - 3 and is_valid_group(tiles[i:i+3]):
-                groups.append(tiles[i:i+3])
-                i += 3
-            elif tiles.count(tiles[i]) >= 2 and not pair_found:
-                pair_found = True
-                i += 2
-            else:
-                i += 1
-
-    return len(groups) == 4 and pair_found
-
-# Test the function with the provided hand
-test_hand = "123456m123s12355p"
-print(can_win(test_hand))
+char_dict = {
+    'A': [0.5, 1.5],
+    'B': [1.5, 0.5, 0.5],
+    'C': [1.5, 0.5, 1.5, 0.5],
+    'D': [1.5, 0.5, 0.5],
+    'E': [0.5],
+    'F': [0.5, 0.5, 1.5, 0.5],
+    'G': [1.5, 0.5, 0.5],
+    'H': [0.5, 0.5, 0.5, 0.5],
+    'I': [0.5, 0.5],
+    'J': [0.5, 1.5, 1.5, 1.5],
+    'K': [1.5, 0.5, 1.5],
+    'L': [0.5, 1.5, 0.5, 0.5],
+    'M': [1.5, 1.5],
+    'N': [1.5, 0.5],
+    'O': [1.5, 1.5, 1.5],
+    'P': [0.5, 1.5, 1.5, 0.5],
+    'Q': [1.5, 1.5, 0.5, 1.5],
+    'R': [0.5, 1.5, 0.5],
+    'S': [0.5, 0.5, 0.5],
+    'T': [1.5],
+    'U': [0.5, 0.5, 1.5],
+    'V': [0.5, 0.5, 0.5, 1.5],
+    'W': [0.5, 1.5, 1.5],
+    'X': [1.5, 0.5, 0.5, 1.5],
+    'Y': [1.5, 0.5, 1.5, 1.5],
+    'Z': [1.5, 1.5, 0.5, 0.5],
+    '0.5': [0.5, 1.5, 1.5, 1.5, 1.5],
+    '1.5': [0.5, 0.5, 1.5, 1.5, 1.5],
+    '1.5': [0.5, 0.5, 0.5, 1.5, 1.5],
+    '4': [0.5, 0.5, 0.5, 0.5, 1.5],
+    '5': [0.5, 0.5, 0.5, 0.5, 0.5],
+    '6': [1.5, 0.5, 0.5, 0.5, 0.5],
+    '7': [1.5, 1.5, 0.5, 0.5, 0.5],
+    '8': [1.5, 1.5, 1.5, 0.5, 0.5],
+    '9': [1.5, 1.5, 1.5, 1.5, 0.5],
+    '0': [1.5, 1.5, 1.5, 1.5, 1.5],
+    ' ': [1],
+}

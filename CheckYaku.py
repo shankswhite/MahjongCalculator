@@ -1,6 +1,10 @@
 import InputHandler
 
 class CheckYaku:
+    def __init__(self, hand):
+        self.riichi = False
+        self.hand = hand
+
     def is_riichi(self, hand):
         # 立直
         pass
@@ -51,12 +55,13 @@ class CheckYaku:
         pass
 
 
-    def is_haitai(self, hand):
+    def is_haidi(self, hand):
         # 海底
-        pass
+        if InputHandler.input_handler(hand):
+            return True
 
 
-    def is_hetai(self, hand):
+    def is_hedi(self, hand):
         # 河底
         pass
 
@@ -156,9 +161,68 @@ class CheckYaku:
         pass
 
 
-    
-
-
-
-    def is_honitsu(self, hand):
+    def is_dasanyuan(self, hand):
+        # 大三元
         pass
+
+
+    def is_siankou(self, hand):
+        # 四暗刻
+        pass
+
+
+    def is_ziyise(self, hand):
+        # 字一色
+        pass
+
+
+    def is_lvyise(self, hand):
+        # 绿一色
+        pass
+
+
+    def is_qinglaotou(self, hand):
+        # 清老头
+        pass
+
+
+    def is_guoshiwushuang(self, hand):
+        # 国士无双
+        pass
+
+
+    def is_xiaosixi(self, hand):
+        # 小四喜
+        pass
+
+
+    def is_sigangzi(self, hand):
+        # 四杠子
+        pass
+
+
+    def is_jiulianbaodeng(self, hand):
+        # 九莲宝灯
+        pass
+
+
+    def is_siankou_danqi(self, hand):
+        # 四暗刻单骑
+        pass
+
+
+    def is_guoshiwushuang_shisanmian(self, hand):
+        # 国士无双十三面
+        pass
+
+
+    def is_jiulianbaodeng_chunzheng(self, hand):
+        # 九莲宝灯纯正
+        pass
+
+
+    def is_dasixi(self, hand):
+        # 大四喜
+        pass
+
+
