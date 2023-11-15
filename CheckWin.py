@@ -38,5 +38,6 @@ class CheckWin:
         return len(groups) == 4 and pair_found
 
     # Test the function with the provided hand
+    # test git
 test_hand = "m123456s123p123z54"
 print(CheckWin.can_win(test_hand))
