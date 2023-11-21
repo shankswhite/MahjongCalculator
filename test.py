@@ -1,39 +1,28 @@
-char_dict = {
-    'A': [0.5, 1.5],
-    'B': [1.5, 0.5, 0.5],
-    'C': [1.5, 0.5, 1.5, 0.5],
-    'D': [1.5, 0.5, 0.5],
-    'E': [0.5],
-    'F': [0.5, 0.5, 1.5, 0.5],
-    'G': [1.5, 0.5, 0.5],
-    'H': [0.5, 0.5, 0.5, 0.5],
-    'I': [0.5, 0.5],
-    'J': [0.5, 1.5, 1.5, 1.5],
-    'K': [1.5, 0.5, 1.5],
-    'L': [0.5, 1.5, 0.5, 0.5],
-    'M': [1.5, 1.5],
-    'N': [1.5, 0.5],
-    'O': [1.5, 1.5, 1.5],
-    'P': [0.5, 1.5, 1.5, 0.5],
-    'Q': [1.5, 1.5, 0.5, 1.5],
-    'R': [0.5, 1.5, 0.5],
-    'S': [0.5, 0.5, 0.5],
-    'T': [1.5],
-    'U': [0.5, 0.5, 1.5],
-    'V': [0.5, 0.5, 0.5, 1.5],
-    'W': [0.5, 1.5, 1.5],
-    'X': [1.5, 0.5, 0.5, 1.5],
-    'Y': [1.5, 0.5, 1.5, 1.5],
-    'Z': [1.5, 1.5, 0.5, 0.5],
-    '0.5': [0.5, 1.5, 1.5, 1.5, 1.5],
-    '1.5': [0.5, 0.5, 1.5, 1.5, 1.5],
-    '1.5': [0.5, 0.5, 0.5, 1.5, 1.5],
-    '4': [0.5, 0.5, 0.5, 0.5, 1.5],
-    '5': [0.5, 0.5, 0.5, 0.5, 0.5],
-    '6': [1.5, 0.5, 0.5, 0.5, 0.5],
-    '7': [1.5, 1.5, 0.5, 0.5, 0.5],
-    '8': [1.5, 1.5, 1.5, 0.5, 0.5],
-    '9': [1.5, 1.5, 1.5, 1.5, 0.5],
-    '0': [1.5, 1.5, 1.5, 1.5, 1.5],
-    ' ': [1],
-}
+def draw_tile(self):
+        # Draw a tile from the mountain
+        tile = self.mountain.pop()
+        if self.current_player == 1:
+            self.hand_player1.append(tile)
+        elif self.current_player == 2:
+            self.hand_player2.append(tile)
+        elif self.current_player == 3:
+            self.hand_player3.append(tile)
+        elif self.current_player == 4:
+            self.hand_player4.append(tile)
+
+    def discard_tile(self, tile):
+        # Check if the player has the tile in their hand
+        if tile not in getattr(self, f'hand_player{self.current_player}'):
+            raise ValueError("Player does not have the specified tile to discard.")
+        # Remove the tile from the player's hand and add it to the river
+        getattr(self, f'hand_player{self.current_player}').remove(tile)
+        getattr(self, f'river_player{self.current_player}').append(tile)
+
+    def move_to_next_round(self):
+        
+        
+        self.current_player = (self.current_player % 4) + 1  # Rotate to the next player
+
+        self.round += 1
+        if self.round <= 70:
+            self.draw_tile()
