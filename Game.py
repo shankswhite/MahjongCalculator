@@ -1,4 +1,7 @@
 import random
+from tile_mapping import TileMapping
+from utility import Utility
+import tkinter as tk
 
 
 class Game:
@@ -25,7 +28,7 @@ class Game:
         m_tiles = [i for i in range(1, 10) for _ in range(4)]
         p_tiles = [i for i in range(21, 30) for _ in range(4)]
         s_tiles = [i for i in range(41, 50) for _ in range(4)]
-        z_tiles = [i for i in range(61, 70) for _ in range(4)]
+        z_tiles = [i for i in range(61, 68) for _ in range(4)]
         
         tiles = m_tiles + p_tiles + s_tiles + z_tiles
         random.shuffle(tiles)
@@ -44,19 +47,119 @@ class Game:
         player2_hand = "Player 2: " + ' '.join(str(tile) for tile in self.hand_player2)
         player3_hand = "Player 3: " + ' '.join(str(tile) for tile in self.hand_player3)
         player4_hand = "Player 4: " + ' '.join(str(tile) for tile in self.hand_player4)
-        return f"Round: {self.round}\n{mountain_str}\n{player1_hand}\n{player2_hand}\n{player3_hand}\n{player4_hand}"
+        player1_river = "Player 1: " + ' '.join(str(tile) for tile in self.river_player1)
+        player2_river = "Player 2: " + ' '.join(str(tile) for tile in self.river_player2)
+        player3_river = "Player 3: " + ' '.join(str(tile) for tile in self.river_player3)
+        player4_river = "Player 4: " + ' '.join(str(tile) for tile in self.river_player4)
+
+
+        return (
+            f"Round: {self.round}\n"
+            f"{mountain_str}\n"
+            f"{player1_hand}\n"
+            f"{player2_hand}\n"
+            f"{player3_hand}\n"
+            f"{player4_hand}\n"
+            f"{player1_river}\n"
+            f"{player2_river}\n"
+            f"{player3_river}\n"
+            f"{player4_river}\n"
+        )
+
+    def display_layout(self):
+        hand_player1_sorted = sorted(self.hand_player1)
+        hand_player2_sorted = sorted(self.hand_player2)
+        hand_player3_sorted = sorted(self.hand_player3)
+        hand_player4_sorted = sorted(self.hand_player4)
+
+        hand_player1_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player1_sorted)
+        hand_player2_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player2_sorted)
+        hand_player3_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player3_sorted)
+        hand_player4_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player4_sorted)
+
+        river_player1_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player1)
+        river_player2_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player2)
+        river_player3_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player3)
+        river_player4_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player4)
+
+
+        root = tk.Tk()
+        root.title("Mahjong Layout")
+        root.geometry('1200x800')
+
+        canvas = tk.Canvas(root, width=800, height=600)
+        canvas.pack()
+
+        for i, tile in enumerate(hand_player1_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            canvas.create_window(200 + i*35, 600, window=label)
+
+        for i, tile in enumerate(hand_player2_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            canvas.create_window(750, 150 + i*35, window=label)
+
+        for i, tile in enumerate(hand_player3_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            canvas.create_window(600 - i*35, 50, window=label)
+
+        for i, tile in enumerate(hand_player4_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            canvas.create_window(50, 550 - i*35, window=label)
+
+
+        for i, tile in enumerate(hand_player1_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            if i >= 12:
+                canvas.create_window(350 + (i-12)*20, 520, window=label)
+            elif i >= 6:
+                canvas.create_window(350 + (i-6)*20, 485, window=label)
+            else:
+                canvas.create_window(350 + i*20, 450, window=label)
+
+        for i, tile in enumerate(hand_player2_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            if i >= 12:
+                canvas.create_window(550, 240 + (i-12)*35, window=label)
+            elif i >= 6:
+                canvas.create_window(515, 240 + (i-6)*35, window=label)
+            else:
+                canvas.create_window(480, 240 + i*35, window=label)
+
+        for i, tile in enumerate(hand_player3_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            if i >= 12:
+                canvas.create_window(245, 240 + (i-12)*35, window=label)
+            elif i >= 6:
+                canvas.create_window(280, 240 + (i-6)*35, window=label)
+            else:
+                canvas.create_window(315, 240 + i*35, window=label)
+
+        for i, tile in enumerate(hand_player4_display):
+            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            if i >= 12:
+                canvas.create_window(450 - (i-12)*20, 130, window=label)
+            elif i >= 6:
+                canvas.create_window(450 - (i-6)*20, 165, window=label)
+            else:
+                canvas.create_window(450 - i*20, 200, window=label)
+
+
+        root.mainloop()
+
+        
 
 
 
 def main():
     game = Game()
     game.start_game()
-    print(game.round)
-    print(len(game.hand_player1))
-    print(game.hand_player2)
-    print(game.hand_player3)
-    print(game.hand_player4)
-    print(game)
+    # print(game.round)
+    # print(len(game.hand_player1))
+    # print(game.hand_player2)
+    # print(game.hand_player3)
+    # print(game.hand_player4)
+    game.display_layout()
+    
 
 
 
@@ -64,21 +167,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    tile_symbols = {
-    1: "🀇",  # 一万
-    2: "🀈",  # 二万
-    3: "🀉",  # 三万
-    4: "🀊",  # 四万
-    5: "🀋",  # 五万
-    6: "🀌",  # 六万
-    7: "🀍",  # 七万
-    8: "🀎",  # 八万
-    9: "🀏",  # 九万
-    }
-    # 示例列表
-    tiles_int = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-    # 转换整数列表到符号并打印
-    tiles_symbols = [tile_symbols[tile] for tile in tiles_int]
-    print(" ".join(tiles_symbols))
+    
 
