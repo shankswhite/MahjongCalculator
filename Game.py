@@ -96,7 +96,7 @@ class Game:
 
         for i, tile in enumerate(hand_player2_display):
             label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
-            canvas.create_window(750, 150 + i*35, window=label)
+            canvas.create_window(750, 150 + i*36, window=label)
 
         for i, tile in enumerate(hand_player3_display):
             label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
@@ -110,11 +110,11 @@ class Game:
         for i, tile in enumerate(hand_player1_display):
             label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
             if i >= 12:
-                canvas.create_window(350 + (i-12)*20, 520, window=label)
+                canvas.create_window(350 + (i-12)*21, 520, window=label)
             elif i >= 6:
-                canvas.create_window(350 + (i-6)*20, 485, window=label)
+                canvas.create_window(350 + (i-6)*21, 485, window=label)
             else:
-                canvas.create_window(350 + i*20, 450, window=label)
+                canvas.create_window(350 + i*21, 450, window=label)
 
         for i, tile in enumerate(hand_player2_display):
             label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
@@ -137,11 +137,11 @@ class Game:
         for i, tile in enumerate(hand_player4_display):
             label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
             if i >= 12:
-                canvas.create_window(450 - (i-12)*20, 130, window=label)
+                canvas.create_window(450 - (i-12)*21, 130, window=label)
             elif i >= 6:
-                canvas.create_window(450 - (i-6)*20, 165, window=label)
+                canvas.create_window(450 - (i-6)*21, 165, window=label)
             else:
-                canvas.create_window(450 - i*20, 200, window=label)
+                canvas.create_window(450 - i*21, 200, window=label)
 
 
         root.mainloop()
