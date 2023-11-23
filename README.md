@@ -13,7 +13,9 @@ Hard:
 
 Some Consensus for Concepts:
 1. Tiles' Name
+   
 <img width="635" alt="image" src="https://github.com/shankswhite/MahjongCalculator/assets/21222666/b5d1839d-208d-4a6c-a80e-8e5596961d68">
+
 tiles' number 2 - 8: simples (tanyao)
 tiles' number 1 or 9: terminals (yaochu)
 
@@ -34,12 +36,14 @@ tiles' number 1 or 9: terminals (yaochu)
    Kong is a set of four identical tiles.
 5) Ready & n-away
    We say a hand is ready (tenpai) when the hand can be complete with one more tile.
+   
    <img width="647" alt="image" src="https://github.com/shankswhite/MahjongCalculator/assets/21222666/37591468-0dfc-41cd-a785-aa636b255cd6">
    We say a hand is 1-away from ready (1-shanten) when the hand can become ready with one more tile.
+   
    <img width="625" alt="image" src="https://github.com/shankswhite/MahjongCalculator/assets/21222666/2fb040aa-1460-4a5f-9f65-918c5bde2a00">
    <img width="624" alt="image" src="https://github.com/shankswhite/MahjongCalculator/assets/21222666/4b177297-3453-4e9d-8581-c63df81760e1">
 
-6)
+7)
    <img width="544" alt="image" src="https://github.com/shankswhite/MahjongCalculator/assets/21222666/33bab1f9-08e9-486a-8c66-9279aa457eef">
 
 
