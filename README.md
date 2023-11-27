@@ -24,17 +24,20 @@ tiles' number 1 or 9: terminals (yaochu)
 2. Objectives
 1) One of the major goals in playing mahjong is to win a hand.
 2) Standard Hand
+   
    To win a standard hand, we need to complete four groups (mentsu) and one head (atama;finalpair).
    There are three exceptions to this:
      chiitoitsu (Seven Pairs),
      kokushi musou (ThirteenOrphans),
      andnagashi mangan(All Terminals and Honors Discard) do not require four groups and one head.
 4) Chow & Pung
+   
    Groups can be classified into two kinds — run and set
    Chow is a set of three consecutive number tiles
    Pung is a set of three identical tiles: e.g., ———, $$$.
    Kong is a set of four identical tiles.
-5) Ready & n-away
+6) Ready & n-away
+   
    We say a hand is ready (tenpai) when the hand can be complete with one more tile.
    
    <img width="647" alt="image" src="https://github.com/shankswhite/MahjongCalculator/assets/21222666/37591468-0dfc-41cd-a785-aa636b255cd6">
