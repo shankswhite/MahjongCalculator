@@ -1,4 +1,4 @@
-import InputHandler
+import input_handler
 
 class CheckYaku:
     def __init__(self, hand):
@@ -57,7 +57,7 @@ class CheckYaku:
 
     def is_haidi(self, hand):
         # 海底
-        if InputHandler.input_handler(hand):
+        if input_handler.input_handler(hand):
             return True
 
 
