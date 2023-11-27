@@ -95,4 +95,4 @@ for i, tile in enumerate(player4_hand):
     canvas.create_window(50, 400 - i*50, window=label)
 
 # 运行Tkinter事件循环
-root.mainloop()
+print(sorted([21, 29, 44, 48, 1, 64, 23, 44, 2, 29, 47, 73, 44, 22]))

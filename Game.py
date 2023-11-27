@@ -2,7 +2,10 @@ import random
 from tile_mapping import TileMapping
 from utility import Utility
 import tkinter as tk
-import input_handler.InputHandler as InputHandler
+import input_handler
+import check_win
+import discard_tile
+
 
 
 class Game:
@@ -23,6 +26,13 @@ class Game:
 
         self.round = 0 # 1-70 round
         self.current_player = 1
+    
+        self.root = tk.Tk()
+        self.root.title("Mahjong Layout")
+        self.root.geometry('1200x800')
+        self.canvas = tk.Canvas(self.root, width=800, height=600)
+        self.canvas.pack()
+        self.tile_labels = {}
 
     def start_game(self, way="random"):
 
@@ -30,7 +40,6 @@ class Game:
         p_tiles = [i for i in range(21, 30) for _ in range(4)]
         s_tiles = [i for i in range(41, 50) for _ in range(4)]
         z_tiles = [i for i in range(61, 82, 3) for _ in range(4)]
-        print(z_tiles)
         
         tiles = m_tiles + p_tiles + s_tiles + z_tiles
         random.shuffle(tiles)
@@ -44,9 +53,9 @@ class Game:
             self.mountain = tiles[53:123]
             self.dead_wall = tiles[123:136]
         elif way == "test":
-            self.hand_player1 = InputHandler.input_handler('112233m123p123s11z')
+            self.hand_player1 = input_handler.InputHandler.input_handler('112233m123p123s11z')
             
-
+        self.display_layout()
 
     def __str__(self):
         mountain_str = "Mountain: " + ' '.join(str(tile) for tile in self.mountain)
@@ -90,80 +99,125 @@ class Game:
         river_player4_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player4)
 
 
-        root = tk.Tk()
-        root.title("Mahjong Layout")
-        root.geometry('1200x800')
+        # root = tk.Tk()
+        # root.title("Mahjong Layout")
+        # root.geometry('1200x800')
 
-        canvas = tk.Canvas(root, width=800, height=600)
-        canvas.pack()
+        # canvas = tk.Canvas(root, width=800, height=600)
+        # canvas.pack()
 
         for i, tile in enumerate(hand_player1_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
-            canvas.create_window(200 + i*35, 600, window=label)
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label.bind('<Button-1>', self.make_click_event(tile, label, hand_player1_sorted))
+            self.canvas.create_window(200 + i*35, 600, window=label)
+            self.tile_labels[tile] = label
 
         for i, tile in enumerate(hand_player2_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
-            canvas.create_window(750, 150 + i*36, window=label)
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            self.canvas.create_window(750, 150 + i*36, window=label)
 
         for i, tile in enumerate(hand_player3_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
-            canvas.create_window(600 - i*35, 50, window=label)
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            self.canvas.create_window(600 - i*35, 50, window=label)
 
         for i, tile in enumerate(hand_player4_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
-            canvas.create_window(50, 550 - i*35, window=label)
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            self.canvas.create_window(50, 550 - i*35, window=label)
 
 
         for i, tile in enumerate(river_player1_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
             if i >= 12:
-                canvas.create_window(350 + (i-12)*21, 520, window=label)
+                self.canvas.create_window(350 + (i-12)*21, 520, window=label)
             elif i >= 6:
-                canvas.create_window(350 + (i-6)*21, 485, window=label)
+                self.canvas.create_window(350 + (i-6)*21, 485, window=label)
             else:
-                canvas.create_window(350 + i*21, 450, window=label)
+                self.canvas.create_window(350 + i*21, 450, window=label)
 
         for i, tile in enumerate(river_player2_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
             if i >= 12:
-                canvas.create_window(550, 240 + (i-12)*35, window=label)
+                self.canvas.create_window(550, 240 + (i-12)*35, window=label)
             elif i >= 6:
-                canvas.create_window(515, 240 + (i-6)*35, window=label)
+                self.canvas.create_window(515, 240 + (i-6)*35, window=label)
             else:
-                canvas.create_window(480, 240 + i*35, window=label)
-
-        for i, tile in enumerate(river_player3_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
-            if i >= 12:
-                canvas.create_window(245, 240 + (i-12)*35, window=label)
-            elif i >= 6:
-                canvas.create_window(280, 240 + (i-6)*35, window=label)
-            else:
-                canvas.create_window(315, 240 + i*35, window=label)
+                self.canvas.create_window(480, 240 + i*35, window=label)
 
         for i, tile in enumerate(river_player4_display):
-            label = tk.Label(root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
             if i >= 12:
-                canvas.create_window(450 - (i-12)*21, 130, window=label)
+                self.canvas.create_window(245, 240 + (i-12)*35, window=label)
             elif i >= 6:
-                canvas.create_window(450 - (i-6)*21, 165, window=label)
+                self.canvas.create_window(280, 240 + (i-6)*35, window=label)
             else:
-                canvas.create_window(450 - i*21, 200, window=label)
+                self.canvas.create_window(315, 240 + i*35, window=label)
 
+        for i, tile in enumerate(river_player3_display):
+            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            if i >= 12:
+                self.canvas.create_window(450 - (i-12)*21, 130, window=label)
+            elif i >= 6:
+                self.canvas.create_window(450 - (i-6)*21, 165, window=label)
+            else:
+                self.canvas.create_window(450 - i*21, 200, window=label)
+
+        next_round_button = tk.Button(self.root, text="Next Round", command=self.next_round)
+        self.canvas.create_window(800, 600, window=next_round_button)
         
 
-        root.mainloop()
+        self.root.mainloop()
 
+    def next_round(self):
+        # This method handles the next round actions: draw and discard a tile for the current player
+        self.draw_tile(self.current_player)
+        # Evaluate hand to find the tile to discard
+        evaluated_hand = discard_tile.evaluate_hand(sorted(getattr(self, f'hand_player{self.current_player}')))
+        # print(evaluated_hand)
+        # Find the tile with the lowest score to discard
+        min_score_tile = min(evaluated_hand, key=lambda x: x[1])[0]
+        # print(min(evaluated_hand, key=lambda x: x[1]))
+        self.discard_tile(self.current_player, min_score_tile)
+        # Move to the next player
+        print(len(self.mountain))
+
+        
+        self.current_player = (self.current_player % 4) + 1
+        self.display_layout()         
+
+    @staticmethod
+    def make_click_event(tile, label, hand):
+            return lambda e: Game.toggle_tile(tile, label, hand)
+    
+    @staticmethod  
+    def toggle_tile(self, tile, label):
+        """
+        Toggle the tile between showing waiting tiles and discarding it.
+        """
+        if label.cget('bg') == 'SystemButtonFace':  # If it's the default color, show waiting tiles
+            label.config(bg='yellow')  # Highlight the tile
+            # self.show_waiting_tiles(tile, player_hand)
+        else:  # If it's already been clicked once, discard the tile
+            label.config(bg='SystemButtonFace')  # Reset the color
+            self.discard_tile(self.current_player, tile)
+            self.next_round()
+                
     def draw_tile(self, player):
-        self.mountain.pop(0)
         if player == 1:
             self.hand_player1.append(self.mountain.pop(0))
+            if check_win.CheckWin.check_win(self.hand_player1):
+                print("Player 1 wins!")
         elif player == 2:
             self.hand_player2.append(self.mountain.pop(0))
+            if check_win.CheckWin.check_win(self.hand_player2):
+                print("Player 2 wins!")
         elif player == 3:
             self.hand_player3.append(self.mountain.pop(0))
+            if check_win.CheckWin.check_win(self.hand_player3):
+                print("Player 3 wins!")
         elif player == 4:
             self.hand_player4.append(self.mountain.pop(0))
+            if check_win.CheckWin.check_win(self.hand_player4):
+                print("Player 4 wins!")
         else:
             print("Player number is invalid!")
 
@@ -192,17 +246,7 @@ def main():
     # print(game.hand_player2)
     # print(game.hand_player3)
     # print(game.hand_player4)
-    game.draw_tile(1)
-    game.discard_tile(1, game.hand_player1[0])
-    game.draw_tile(2)
-    game.draw_tile(2)
-    game.draw_tile(2)
-    game.draw_tile(2)
-    game.discard_tile(1, game.hand_player1[0])
-    game.discard_tile(1, game.hand_player1[0])
-    game.discard_tile(1, game.hand_player1[0])
-    game.discard_tile(1, game.hand_player1[0])
-    print(game.hand_player2)
+
     game.display_layout()
     
     
