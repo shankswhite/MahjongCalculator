@@ -35,25 +35,26 @@ class CheckWin:
                         return True
         return False
 
+
+    @staticmethod
+    def find_waiting_tiles(hand):
+        waiting_tiles = []
+        for i in range(len(hand)):
+            test_hand = hand[:i] + hand[i+1:]
+            for tile in tile_range:
+                if CheckWin.check_win(test_hand + [tile]):
+                    waiting_tiles.append((hand[i], tile))
+        return waiting_tiles
+
 tile_range = list(range(1, 10)) + list(range(21, 30)) + list(range(41, 50)) + list(range(61, 82, 3))
 
-
-def find_waiting_tiles(hand):
-    waiting_tiles = []
-    for i in range(len(hand)):
-        test_hand = hand[:i] + hand[i+1:]
-        for tile in tile_range:
-            if CheckWin.check_win(test_hand + [tile]):
-                waiting_tiles.append((hand[i], tile))
-    return waiting_tiles
-
 # Example hand
-example_hand = [1, 2, 3, 21, 22, 23, 24, 27, 41, 42, 43, 63, 63, 66]
-waiting_tiles = find_waiting_tiles(example_hand)
+# example_hand = [1, 2, 3, 21, 22, 23, 28, 27, 41, 42, 43, 63, 63, 66]
+# waiting_tiles = CheckWin.find_waiting_tiles(example_hand)
 
-print(waiting_tiles)
+# print(waiting_tiles)
 
 
-tiles = input_handler.InputHandler.input_handler('123m122337p123s11z')
+# tiles = input_handler.InputHandler.input_handler('123m122337p123s11z')
 
 # print(CheckWin.check_win(tiles))

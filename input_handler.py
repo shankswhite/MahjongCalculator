@@ -18,6 +18,6 @@ class InputHandler:
 
 
 
-# tiles = InputHandler.input_handler('1336p243m2p4578p77z')
-# print(tiles)
+tiles = InputHandler.input_handler('1234567z')
+print(tiles)
 
