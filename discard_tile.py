@@ -1,11 +1,11 @@
-import game
+import game_
 
 
 class DiscardTile:
 
     @staticmethod
     def discard_tile(player):
-        hand = getattr(game, f'hand_player{player}')
+        hand = getattr(game_, f'hand_player{player}')
     
 
 # game = game.Game()
