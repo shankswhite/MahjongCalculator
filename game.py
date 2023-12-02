@@ -6,6 +6,8 @@ import input_handler
 import check_win
 import discard_tile
 from collections import Counter, defaultdict
+import utility
+from math import comb
 
 
 
@@ -100,6 +102,23 @@ class Game:
             self.hand_player4 = tiles[40:53]
             self.mountain = tiles[53:123]
             self.dead_wall = tiles[123:136]
+        elif way == "1":
+            self.hand_player1 = input_handler.InputHandler.input_handler("4566777m234s666p")
+            self.hand_player2 = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.hand_player3 = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.hand_player4 = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.mountain = input_handler.InputHandler.input_handler("123456789mz1234")
+            self.dead_wall = input_handler.InputHandler.input_handler("123456789m123s1z")
+        elif way == "2":
+            self.hand_player1 = input_handler.InputHandler.input_handler("1112345678999m")
+            self.hand_player2 = input_handler.InputHandler.input_handler("44m667p123678s11z")
+            self.hand_player3 = input_handler.InputHandler.input_handler("44m667p123678s11z")
+            self.hand_player4 = input_handler.InputHandler.input_handler("44m667p123678s11z")
+            self.mountain = input_handler.InputHandler.input_handler("111111111111111111z")
+            self.dead_wall = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.river_player2 = input_handler.InputHandler.input_handler("5588p")
+            self.river_player3 = input_handler.InputHandler.input_handler("58p")
+
         elif way == "test":
             self.hand_player1 = self.get_player1_hand
             self.hand_player2 = self.get_player2_hand
@@ -107,6 +126,7 @@ class Game:
             self.hand_player4 = self.get_player4_hand
             self.mountain = self.get_mountain
             self.dead_wall = self.get_dead_wall
+
 
             temp_list_filled = []
             temp_list_unfilled = []
@@ -326,8 +346,8 @@ class Game:
         update_button = tk.Button(self.root, text='Set Table', command=get_input)
         self.canvas.create_window(1050, 700, window=update_button)
 
-        waiting_message = tk.Label(self.root, text=self.waiting_message, font=('Arial Unicode MS', 24))
-        self.canvas.create_window(200, 800, window=waiting_message)
+        waiting_message = tk.Label(self.root, text=self.waiting_message, font=('Arial Unicode MS', 24), anchor='w')
+        self.canvas.create_window(400, 800, window=waiting_message)
 
 
         # print(self.label1_id)
@@ -383,6 +403,7 @@ class Game:
     def draw_tile(self, player):
         if player == 1:
             self.hand_player1.append(self.mountain.pop(0))
+            self.waiting_message = ''
             self.update_known_tiles()
             if check_win.CheckWin.check_win(self.hand_player1):
                 print("Player 1 wins!")
@@ -397,6 +418,10 @@ class Game:
                 result_tiles = dict(result_tiles) # got dict type of waiting tiles
                 
                 for i in result_tiles:
+                    tzumo_prob_list = []
+                    ron_prob_list = []
+                    ron_prob_dict = {}
+                    ron_prob_dict2 = {}
                     waiting_list_num = []
                     waiting_list_display = []
                     waiting_tiles_set = []
@@ -409,13 +434,218 @@ class Game:
                     waiting_count = len(waiting_tiles_set) * 4
                     # print(waiting_tiles_set)
                     # print(self.known_tiles)
-                    # print(i)
-                    for j in self.known_tiles:
-                        if j in waiting_tiles_set:
+                    for tile in self.known_tiles:
+                        if tile in waiting_tiles_set:
                             waiting_count -= 1
+                    
+
+                    # for waiting_tile in waiting_tiles_set:
+                    #     if waiting_tile in self.river_player2
+
+
+                    left_tiles_count = len(self.mountain)
+
+                    # tzumo
+                    for l in range(0, len(self.mountain), 4):
+                        left_tiles_count -= 4
+                        normalized_waiting_count = waiting_count * left_tiles_count / ((13*3) + left_tiles_count + len(self.dead_wall))
+                        tzumo_prob_list.append(round(normalized_waiting_count / len(self.mountain), 4))
+
+
+                    cumulative_prob_tzumo = 0
+                    remaining_prob_tzumo = 1
+                    print(tzumo_prob_list)
+                    for prob in tzumo_prob_list:
+                        cumulative_prob_tzumo += remaining_prob_tzumo * prob
+                        remaining_prob_tzumo *= (1 - prob)
+                    # ron
+                    ron_prob_final = []
+                    for waiting_tile_ron in waiting_tiles_set:
+                        waiting_count_ron = 4
+
+                        for tile in self.known_tiles:
+                            if tile in waiting_tiles_set and tile == waiting_tile_ron:
+                                waiting_count_ron -= 1
+                        left_tiles_count_ron = len(self.mountain)
+                        for m in range(0, len(self.mountain), 4):
+                            left_tiles_count_ron -= 4
+                            normalized_waiting_count = waiting_count_ron * left_tiles_count_ron / ((13*3) + left_tiles_count + len(self.dead_wall))
+                            ron_prob_list.append(round(normalized_waiting_count / len(self.mountain), 4))
+                            
+                        ron_prob_dict[waiting_tile_ron] = ron_prob_list
+                        # print(ron_prob_dict)
+                        # print(result_tiles[i], waiting_tile_ron, ron_prob_list)
+                        cumulative_prob_ron = 0
+                        remaining_prob_ron = 1
+                        have_zero_tile_prob = utility.Utility.get_tile_prob()[0]
+                        have_one_tile_prob = utility.Utility.get_tile_prob()[1]
+                        have_two_tile_prob = utility.Utility.get_tile_prob()[2]
+                        have_three_tile_prob = utility.Utility.get_tile_prob()[3]
+                        have_four_tile_prob = utility.Utility.get_tile_prob()[4]
+
+                        
+                            
+                            
+
+                        
+                        # for prob_ron in ron_prob_list:
+                        #     cumulative_prob_ron += (remaining_prob_ron * (prob_ron + have_zero_tile_prob) * 1 / 14 + 
+                        #                             remaining_prob_ron * (prob_ron + have_one_tile_prob) * 2 / 14 + 
+                        #                             remaining_prob_ron * (prob_ron + have_two_tile_prob) * 3 / 14 + 
+                        #                             remaining_prob_ron * (prob_ron + have_three_tile_prob) * 4 / 14 + 
+                        #                             remaining_prob_ron * (0 + have_four_tile_prob) * 4 / 14)
+                                                    
+                        #     # print(prob_ron)
+                        #     remaining_prob_ron *= (1 - prob_ron)
+                        # print(waiting_tile_ron, cumulative_prob_ron)
+
+                        # print(cumulative_prob_ron)
+                        ron_prob_list = []
+
+                        
+                        # ron_prob_final.append(cumulative_prob_ron * 100 * 3)
+                        # print(waiting_tile_ron, waiting_count_ron)
+
+
+                    # print(waiting_count)
+                    print(ron_prob_dict)
+                    all_left_tiles = 136 - len(self.known_tiles)
+                    for k in range(0, min(14 + 1, waiting_count + 1)):
+                        prob_waiting_tile_ron = comb(waiting_count, k) * comb(all_left_tiles - waiting_count, 14 - k) / comb(all_left_tiles, 14)
+                        ron_prob_dict2[k] = prob_waiting_tile_ron
+       
+                    ron_prob_dict3 = {}
+                    ron_prob_dict4 = {}
+                    for element in ron_prob_dict2.items():
+                        # print(waiting_tiles_set)
+                        discard_waiting_tile = 0
+                        for tile in waiting_tiles_set:
+                            if tile in self.river_player2:
+                                discard_waiting_tile += 1
+                                break
+                        for tile in waiting_tiles_set:
+                            if tile in self.river_player3:
+                                discard_waiting_tile += 1
+                                break
+                        for tile in waiting_tiles_set:
+                            if tile in self.river_player4:
+                                discard_waiting_tile += 1
+                        # print(discard_waiting_tile)
+                        ron_prob_dict3[element[0]] = (element[1] * element[0] / 14 * 3)
+                        
+                        ron_prob_dict4[element[0]] = (element[1] * element[0] / 14 * (3 - discard_waiting_tile) +
+                                                    element[1] * discard_waiting_tile) / len(waiting_tiles_set)
+                        
+                    del ron_prob_dict4[0]  
+               
+                    ron_prob_total = sum(ron_prob_dict3.values())
+
+
+                    # ron_prob_list = []
+                    # left_tiles_count_ron = len(self.mountain)
+                    # for l in range(0, len(self.mountain), 4):
+                    #     left_tiles_count_ron -= 4
+                    #     ron_prob_dict2 = {}
+                    #     all_left_tiles = 136 - len(self.known_tiles)
+                    #     for k in range(0, min(14 + 1, waiting_count + 1)):
+                    #         prob_waiting_tile_ron = comb(waiting_count, k) * comb(all_left_tiles - waiting_count, 14 - k) / comb(all_left_tiles, 14)
+                    #         ron_prob_dict2[k] = prob_waiting_tile_ron
+                    #     print(ron_prob_dict2)
+
+
+                    # for m in range(0, len(self.mountain), 4):
+                    #         left_tiles_count_ron -= 4
+                    #         normalized_waiting_count = waiting_count_ron * left_tiles_count_ron / ((13*3) + left_tiles_count + len(self.dead_wall))
+                    #         ron_prob_list.append(round(normalized_waiting_count / len(self.mountain), 4))
+                        
+                    # print(ron_prob_list)
+                    ron_prob_dict5 = {}
+                    ron_prob_dict6 = {}
+                    all_left_tiles = 136 - len(self.known_tiles)
+                    for k in range(0, min(14 + 1, waiting_count + 1)):
+                        prob_waiting_tile_ron = comb(waiting_count, k) * comb(all_left_tiles - waiting_count, 14 - k) / comb(all_left_tiles, 14)
+                        ron_prob_dict5[k] = prob_waiting_tile_ron
+                    for element in ron_prob_dict5.items():
+                        # print(waiting_tiles_set)
+                        discard_waiting_tile = 0
+                        for tile in waiting_tiles_set:
+                            if tile in self.river_player2:
+                                discard_waiting_tile += 1
+                                break
+                        for tile in waiting_tiles_set:
+                            if tile in self.river_player3:
+                                discard_waiting_tile += 1
+                                break
+                        for tile in waiting_tiles_set:
+                            if tile in self.river_player4:
+                                discard_waiting_tile += 1
+                        # print(discard_waiting_tile)
+                        ron_prob_dict6[element[0]] = (element[1] * element[0] / 14 * 3)
+                    # print(ron_prob_dict6)
+                    
+                    ron_prob_total2 = sum(ron_prob_dict6.values())
+
+                    ron_prob_list2 = [ron_prob_total2] * (len(self.mountain) // 4)
+
+                  
+
+
+                    ron_prob_list3 = [1 - (1 - ron_prob_total2) ** (((len(self.mountain) // 4) + 1) - round + 1) for round in range(1, (len(self.mountain) // 4) + 1)]
+                    ron_prob_list3 = ron_prob_list3[1:]
+                    ron_prob_list3.append(ron_prob_total2)
+
+                    tzumo_prob_list2 = tzumo_prob_list[:-1]
+   
 
                     
-                    self.waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}, {waiting_count} left\n"
+                    ron_prob_list = [ron_prob_total] * (len(self.mountain) // 4)
+
+                    
+
+                    
+
+             
+                    
+                    final_prob = []
+                    temp_list = [1] * len(ron_prob_list2)
+                    if discard_waiting_tile == 0:
+                        final_prob = ron_prob_list2
+                    elif discard_waiting_tile == 1:
+                        final_prob = [tzumo + ron - tzumo * ron for tzumo, ron in zip(tzumo_prob_list2, ron_prob_list2)]
+                    elif discard_waiting_tile == 2:
+                        final_prob = [tzumo1 + tzumo2 + ron - tzumo1*tzumo2 - tzumo1*ron - tzumo2*ron + tzumo1*tzumo2*ron for tzumo1, tzumo2, ron in zip(tzumo_prob_list2, tzumo_prob_list2, ron_prob_list2)]
+                    elif discard_waiting_tile == 3:
+                        final_prob = [tzumo1 + tzumo2 + tzumo3 + ron - tzumo1*tzumo2 - tzumo1*tzumo3 - tzumo2*tzumo3 - tzumo1*ron - tzumo2*ron - tzumo3*ron + tzumo1*tzumo2*ron + tzumo1*tzumo3*ron + tzumo2*tzumo3*ron - tzumo1*tzumo2*tzumo3*ron for tzumo1, tzumo2, tzumo3, ron in zip(tzumo_prob_list2, tzumo_prob_list2, tzumo_prob_list2, ron_prob_list2)]
+
+                    # print("tzumo", tzumo_prob_list2)
+
+                    # print("ron", ron_prob_list2)
+                    print("ron", ron_prob_list)
+                    print("final", final_prob)
+                    cumulative_prob_ron = 0
+                    remaining_prob_ron = 1
+                    for prob in ron_prob_list:
+                        cumulative_prob_ron += remaining_prob_ron * prob
+                        remaining_prob_ron *= (1 - prob)
+                    # for round in range(0, len(self.mountain), 4):
+                    #     cumulative_prob_ron += remaining_prob_ron * ron_prob_total * 3
+                    #     remaining_prob_ron *= (1 - )
+                    cumulative_prob_ron2 = 0
+                    remaining_prob_ron2 = 1
+                    for prob in final_prob:
+                        cumulative_prob_ron2 += remaining_prob_ron2 * prob
+                        remaining_prob_ron2 *= (1 - prob)
+
+                    
+                    # print(cumulative_prob_ron)
+                    tzumo_prob = cumulative_prob_tzumo * 100
+                    ron_prob = cumulative_prob_ron * 100
+                    ron_prob2 = cumulative_prob_ron2 * 100
+
+                    
+
+
+                    self.waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}, {waiting_count} left, P(Tzumo): {round(tzumo_prob, 2)}% P(Ron): {round(ron_prob, 2)}% P(Ron_Plus):{round(ron_prob2, 2)}%\n"
         
                 
         elif player == 2:
@@ -488,7 +718,7 @@ class Game:
 
 def main():
     game = Game()
-    game.start_game()
+    game.start_game(way="2")
     # print(game.round)
     # print(len(game.hand_player1))
     # print(game.hand_player2)

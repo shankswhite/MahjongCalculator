@@ -100,6 +100,13 @@ class Game:
             self.hand_player4 = tiles[40:53]
             self.mountain = tiles[53:123]
             self.dead_wall = tiles[123:136]
+        elif way == "1":
+            self.hand_player1 = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.hand_player2 = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.hand_player3 = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.hand_player4 = input_handler.InputHandler.input_handler("123456789m123s1z")
+            self.mountain = input_handler.InputHandler.input_handler("123456789m123s1z123456789m123s1z123456789m123s1z123456789m123s1z")
+            self.dead_wall = input_handler.InputHandler.input_handler("123456789m123s1z")
         elif way == "test":
             self.hand_player1 = self.get_player1_hand
             self.hand_player2 = self.get_player2_hand
@@ -326,8 +333,8 @@ class Game:
         update_button = tk.Button(self.root, text='Set Table', command=get_input)
         self.canvas.create_window(1050, 700, window=update_button)
 
-        waiting_message = tk.Label(self.root, text=self.waiting_message, font=('Arial Unicode MS', 24))
-        self.canvas.create_window(200, 800, window=waiting_message)
+        waiting_message = tk.Label(self.root, text=self.waiting_message, font=('Arial Unicode MS', 24), anchor='w')
+        self.canvas.create_window(400, 800, window=waiting_message)
 
 
         # print(self.label1_id)
@@ -383,6 +390,7 @@ class Game:
     def draw_tile(self, player):
         if player == 1:
             self.hand_player1.append(self.mountain.pop(0))
+            self.waiting_message = ''
             self.update_known_tiles()
             if check_win.CheckWin.check_win(self.hand_player1):
                 print("Player 1 wins!")
@@ -397,6 +405,7 @@ class Game:
                 result_tiles = dict(result_tiles) # got dict type of waiting tiles
                 
                 for i in result_tiles:
+                    tzumo_prob_list = []
                     waiting_list_num = []
                     waiting_list_display = []
                     waiting_tiles_set = []
@@ -407,14 +416,33 @@ class Game:
                         waiting_tiles_set.append(j)
 
                     waiting_count = len(waiting_tiles_set) * 4
+                    # print(waiting_tiles_set)
+                    # print(self.known_tiles)
+                    for k in self.known_tiles:
+                        if k in waiting_tiles_set:
+                            waiting_count -= 1
+                    print(i)
                     print(waiting_tiles_set)
                     print(self.known_tiles)
-                    for j in self.known_tiles:
-                        if j in waiting_tiles_set:
-                            waiting_count -= 1
+                    left_tiles_count = len(self.mountain)
 
-                    
-                    self.waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}, {waiting_count} left\n"
+                    for l in range(0, len(self.mountain), 4):
+                        left_tiles_count -= 4
+                        normalized_waiting_count = waiting_count * left_tiles_count / ((13*3) + left_tiles_count + len(self.dead_wall))
+                        tzumo_prob_list.append(round(normalized_waiting_count / len(self.mountain), 4))
+                        print(tzumo_prob_list)
+                    # normalized_waiting_count = waiting_count * len(self.mountain) / ((13*3) + len(self.mountain) + len(self.dead_wall))
+                    cumulative_prob = 0  # Initialize the cumulative probability
+                    remaining_prob = 1  # Start with a 100% remaining probability
+
+                    for prob in tzumo_prob_list:
+                        prob_decimal = prob  # Convert percentage to decimal
+                        cumulative_prob += remaining_prob * prob_decimal  # Add the probability of winning this round
+                        remaining_prob *= (1 - prob_decimal)  # Update the remaining probability
+
+
+                    tzumo_prob = cumulative_prob * 100
+                    self.waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}, {waiting_count} left, P(Tzumo): {round(tzumo_prob, 2)}% P(Ron): 15%\n"
         
                 
         elif player == 2:
@@ -487,7 +515,7 @@ class Game:
 
 def main():
     game = Game()
-    game.start_game()
+    game.start_game(way="1")
     # print(game.round)
     # print(len(game.hand_player1))
     # print(game.hand_player2)
