@@ -1,5 +1,6 @@
 import random
 from tile_mapping import TileMapping
+from tkinter import PhotoImage
 from utility import Utility
 import tkinter as tk
 import input_handler
@@ -110,14 +111,14 @@ class Game:
             self.mountain = input_handler.InputHandler.input_handler("123456789mz1234")
             self.dead_wall = input_handler.InputHandler.input_handler("123456789m123s1z")
         elif way == "2":
-            self.hand_player1 = input_handler.InputHandler.input_handler("1112345678999m")
+            self.hand_player1 = input_handler.InputHandler.input_handler("44m667p123678s11z")
             self.hand_player2 = input_handler.InputHandler.input_handler("44m667p123678s11z")
             self.hand_player3 = input_handler.InputHandler.input_handler("44m667p123678s11z")
             self.hand_player4 = input_handler.InputHandler.input_handler("44m667p123678s11z")
             self.mountain = input_handler.InputHandler.input_handler("111111111111111111z")
             self.dead_wall = input_handler.InputHandler.input_handler("123456789m123s1z")
             self.river_player2 = input_handler.InputHandler.input_handler("5588p")
-            self.river_player3 = input_handler.InputHandler.input_handler("58p")
+            # self.river_player3 = input_handler.InputHandler.input_handler("58p")
 
         elif way == "test":
             self.hand_player1 = self.get_player1_hand
@@ -209,44 +210,56 @@ class Game:
         hand_player4_sorted = sorted(self.hand_player4)
         # print(hand_player1_sorted)
 
-        hand_player1_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player1_sorted)
-        hand_player2_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player2_sorted)
-        hand_player3_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player3_sorted)
-        hand_player4_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player4_sorted)
 
-        river_player1_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player1)
-        river_player2_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player2)
-        river_player3_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player3)
-        river_player4_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player4)
 
+        # hand_player1_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player1_sorted)
+        # hand_player2_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player2_sorted)
+        # hand_player3_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player3_sorted)
+        # hand_player4_display = ''.join(TileMapping.tile_mapping[tile] for tile in hand_player4_sorted)
+
+        # river_player1_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player1)
+        # river_player2_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player2)
+        # river_player3_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player3)
+        # river_player4_display = ''.join(TileMapping.tile_mapping[tile] for tile in self.river_player4)
+        hand_player1_display = hand_player1_sorted
+        hand_player2_display = hand_player2_sorted
+        hand_player3_display = hand_player3_sorted
+        hand_player4_display = hand_player4_sorted
+
+        river_player1_display = self.river_player1
+        river_player2_display = self.river_player2
+        river_player3_display = self.river_player3
+        river_player4_display = self.river_player4
+
+        TileMapping.load_images()
 
 
         for i, tile in enumerate(hand_player1_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             label.bind('<Button-1>', lambda event, t=tile, l=label: self.next_round_auto(l, t, manual=True))
 
             self.label1_id.append(self.canvas.create_window(300 + i*35, 600, window=label))
             self.selected_tiles[tile] = False
 
-        for i, value in enumerate(self.hand_list):
-            label = tk.Label(self.root, text=value, font=('Arial Unicode MS', 15))
-            self.canvas.create_window(300 + i*35, 650, window=label)
+        # for i, value in enumerate(self.hand_list):
+        #     label = tk.Label(self.root, image=value, font=('Arial Unicode MS', 15))
+        #     self.canvas.create_window(300 + i*35, 650, window=label)
 
         for i, tile in enumerate(hand_player2_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             self.label2_id.append(self.canvas.create_window(850, 150 + i*36, window=label))
 
         for i, tile in enumerate(hand_player3_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             self.label3_id.append(self.canvas.create_window(700 - i*35, 50, window=label))
 
         for i, tile in enumerate(hand_player4_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             self.label4_id.append(self.canvas.create_window(150, 550 - i*35, window=label))
 
 
         for i, tile in enumerate(river_player1_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             if i >= 12:
                 self.canvas.create_window(450 + (i-12)*21, 520, window=label)
             elif i >= 6:
@@ -255,7 +268,7 @@ class Game:
                 self.canvas.create_window(450 + i*21, 450, window=label)
 
         for i, tile in enumerate(river_player2_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             if i >= 12:
                 self.canvas.create_window(650, 240 + (i-12)*35, window=label)
             elif i >= 6:
@@ -264,7 +277,7 @@ class Game:
                 self.canvas.create_window(580, 240 + i*35, window=label)
 
         for i, tile in enumerate(river_player4_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             if i >= 12:
                 self.canvas.create_window(345, 240 + (i-12)*35, window=label)
             elif i >= 6:
@@ -273,7 +286,7 @@ class Game:
                 self.canvas.create_window(415, 240 + i*35, window=label)
 
         for i, tile in enumerate(river_player3_display):
-            label = tk.Label(self.root, text=tile, font=('Arial Unicode MS', 24))
+            label = tk.Label(self.root, image=TileMapping.loaded_images[tile], font=('Arial Unicode MS', 18))
             if i >= 12:
                 self.canvas.create_window(550 - (i-12)*21, 130, window=label)
             elif i >= 6:
@@ -346,8 +359,9 @@ class Game:
         update_button = tk.Button(self.root, text='Set Table', command=get_input)
         self.canvas.create_window(1050, 700, window=update_button)
 
-        waiting_message = tk.Label(self.root, text=self.waiting_message, font=('Arial Unicode MS', 24), anchor='w')
+        waiting_message = tk.Label(self.root, text=self.waiting_message, font=('Arial Unicode MS', 18), anchor='w')
         self.canvas.create_window(400, 800, window=waiting_message)
+        
 
 
         # print(self.label1_id)
@@ -646,7 +660,9 @@ class Game:
 
 
                     self.waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}, {waiting_count} left, P(Tzumo): {round(tzumo_prob, 2)}% P(Ron): {round(ron_prob, 2)}% P(Ron_Plus):{round(ron_prob2, 2)}%\n"
-        
+                    # self.waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}, {waiting_count} left, P(Tzumo): {round(tzumo_prob, 2)}%\n"
+
+                    print(self.waiting_message)
                 
         elif player == 2:
             self.hand_player2.append(self.mountain.pop(0))
