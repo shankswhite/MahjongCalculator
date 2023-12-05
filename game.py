@@ -111,13 +111,13 @@ class Game:
             self.mountain = input_handler.InputHandler.input_handler("123456789mz1234")
             self.dead_wall = input_handler.InputHandler.input_handler("123456789m123s1z")
         elif way == "2":
-            self.hand_player1 = input_handler.InputHandler.input_handler("44m667p123678s11z")
+            self.hand_player1 = input_handler.InputHandler.input_handler("123456789p778s2s")
             self.hand_player2 = input_handler.InputHandler.input_handler("44m667p123678s11z")
             self.hand_player3 = input_handler.InputHandler.input_handler("44m667p123678s11z")
             self.hand_player4 = input_handler.InputHandler.input_handler("44m667p123678s11z")
-            self.mountain = input_handler.InputHandler.input_handler("111111111111111111z")
+            self.mountain = input_handler.InputHandler.input_handler("2s111111111111111111z")
             self.dead_wall = input_handler.InputHandler.input_handler("123456789m123s1z")
-            self.river_player2 = input_handler.InputHandler.input_handler("5588p")
+            self.river_player2 = input_handler.InputHandler.input_handler("6699s")
             # self.river_player3 = input_handler.InputHandler.input_handler("58p")
 
         elif way == "test":
@@ -421,7 +421,7 @@ class Game:
             self.update_known_tiles()
             if check_win.CheckWin.check_win(self.hand_player1):
                 print("Player 1 wins!")
-                self.player1_message.config(text="Player 1 Ron!")
+                self.player1_message.config(text="Player 1 Won!")
             elif check_win.CheckWin.find_waiting_tiles(self.hand_player1):
                 self.player1_message.config(text="Player 1 Waiting!")
                 self.waiting_message = ""
@@ -458,14 +458,14 @@ class Game:
 
 
                     left_tiles_count = len(self.mountain)
-
+                    # normalized_waiting_count = 0
                     # tzumo
                     for l in range(0, len(self.mountain), 4):
                         left_tiles_count -= 4
                         normalized_waiting_count = waiting_count * left_tiles_count / ((13*3) + left_tiles_count + len(self.dead_wall))
                         tzumo_prob_list.append(round(normalized_waiting_count / len(self.mountain), 4))
 
-
+                    print(tzumo_prob_list)
                     cumulative_prob_tzumo = 0
                     remaining_prob_tzumo = 1
                     print(tzumo_prob_list)
