@@ -2,6 +2,10 @@ import tkinter as tk
 from tkinter import PhotoImage
 from PIL import Image, ImageTk
 class TileMapping:
+    '''
+    build a mapping between tile number and tile character & tile image
+    for displaying tiles in GUI and console
+    '''
     tile_mapping = {
         1: "🀇", 
         2: "🀈", 
@@ -97,12 +101,10 @@ def main():
     canvas = tk.Canvas(root, width=1200, height=800)
     canvas.pack()
 
-    # 加载图片
     TileMapping.load_images()
 
-    # 创建Label，并使用已加载的图片
     label = tk.Label(root, image=TileMapping.loaded_images[1])
-    label.image = TileMapping.loaded_images[1]  # 保持对图片的引用
+    label.image = TileMapping.loaded_images[1]
     canvas.create_window(500, 500, window=label)
 
     root.mainloop()

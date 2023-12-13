@@ -3,11 +3,20 @@ import tkinter as tk
 import input_handler
 from tile_mapping import TileMapping
 from collections import Counter, defaultdict
+
+
 class CheckWin:
     @staticmethod
     def check_win(hand):
+        '''
+        check_win -- checks if a hand is a winning hand
+        Using recursion
+        Parameters:
+            hand -- the hand to check
+        Returns True if the hand is a winning hand, False otherwise
+        '''
         hand = sorted(hand)
-        
+
         def is_set_or_pair(lst):
             if len(lst) == 3:
                 return lst[0] == lst[1] == lst[2] or lst[0] + 1 == lst[1] and lst[1] + 1 == lst[2]
@@ -22,7 +31,8 @@ class CheckWin:
                 for j in range(i+1, len(lst)):
                     for k in range(j+1, len(lst)):
                         if is_set_or_pair([lst[i], lst[j], lst[k]]):
-                            new_lst = lst[:i] + lst[i+1:j] + lst[j+1:k] + lst[k+1:]
+                            new_lst = lst[:i] + lst[i+1:j] + \
+                                lst[j+1:k] + lst[k+1:]
                             if recursive_check(new_lst):
                                 return True
             return False
@@ -35,9 +45,14 @@ class CheckWin:
                         return True
         return False
 
-
     @staticmethod
     def find_waiting_tiles(hand):
+        '''
+        recursion method to get waiting tiles
+        Parameters:
+            hand -- the hand to check
+        Returns a list of waiting tiles
+        '''
         waiting_tiles = []
         for i in range(len(hand)):
             test_hand = hand[:i] + hand[i+1:]
@@ -45,7 +60,7 @@ class CheckWin:
                 if CheckWin.check_win(test_hand + [tile]):
                     waiting_tiles.append((hand[i], tile))
         return waiting_tiles
-    
+
     @staticmethod
     def find_1away_waiting_tiles(hand):
         waiting_tiles = []
@@ -55,7 +70,7 @@ class CheckWin:
                 if CheckWin.find_waiting_tiles(test_hand + [tile]):
                     waiting_tiles.append((hand[i], tile))
         return waiting_tiles
-    
+
     @staticmethod
     def find_2away_waiting_tiles(hand):
         waiting_tiles = []
@@ -65,7 +80,7 @@ class CheckWin:
                 if CheckWin.find_1away_waiting_tiles(test_hand + [tile]):
                     waiting_tiles.append((hand[i], tile))
         return waiting_tiles
-    
+
     @staticmethod
     def left_(tiles):
         complete = []
@@ -91,7 +106,7 @@ class CheckWin:
                 if i[0] in tiles:
                     tiles.remove(i[0])
                     temp.remove(i)
-                    complete.append((i,i,i))
+                    complete.append((i, i, i))
         if len(temp) > 1:
             for i in temp:
                 tiles.append(i)
@@ -99,6 +114,7 @@ class CheckWin:
         else:
             complete.append(temp[0])
         return [tiles, complete, multi_pairs]
+
     @staticmethod
     def left__(cards):
         complete = []
@@ -118,23 +134,22 @@ class CheckWin:
                         cards.remove(cards[0]+1)
                         cards.remove(cards[0])
 
-        return [cards,complete]
+        return [cards, complete]
 
-
-tile_range = list(range(1, 10)) + list(range(21, 30)) + list(range(41, 50)) + list(range(63, 82, 3))
+# Below is the test code for the above functions.
+tile_range = list(range(1, 10)) + list(range(21, 30)) + \
+    list(range(41, 50)) + list(range(63, 82, 3))
 
 example_hand_2away = [1, 2, 3, 22, 23, 47, 48, 42, 43, 63, 63, 66, 69, 72]
 example_hand_0away = [1, 2, 3, 21, 22, 23, 41, 42, 43, 47, 47, 63, 63, 69]
 example_hand_1away = [1, 2, 3, 21, 22, 23, 42, 69, 47, 48, 63, 63, 66, 66]
-# waiting_tiles = CheckWin.find_1away_waiting_tiles(example_hand_2away)
-# print(waiting_tiles)
+
 
 test = [1, 2, 3, 21, 22, 23, 41, 42, 43, 47, 47, 63, 66, 69]
-test2 = [1,1,22,22,43,43,4,4,25,25,46,46,67,67]
-test3 = [1,1,2,2,3,3,43,63,63,66,66,47,48]
-# print(CheckWin.left_(test3))
+test2 = [1, 1, 22, 22, 43, 43, 4, 4, 25, 25, 46, 46, 67, 67]
+test3 = [1, 1, 2, 2, 3, 3, 43, 63, 63, 66, 66, 47, 48]
 test4 = [1, 2, 3, 21, 22, 23, 41, 42, 43, 47, 47, 63, 63, 66]
-# print(CheckWin.check_win(test4))
+
 
 def main():
     root = tk.Tk()
@@ -142,7 +157,6 @@ def main():
     canvas = tk.Canvas(root, width=1200, height=800)
     canvas.pack()
     test1 = input_handler.InputHandler.input_handler("44m667p123678s111z")
-    # test1 = [1, 2, 3, 21, 22, 23, 42, 69, 47, 48, 63, 63, 66, 66]
     waiting_tiles = CheckWin.find_waiting_tiles(test1)
     result_tiles = defaultdict(set)
     for i, j in waiting_tiles:
@@ -156,52 +170,37 @@ def main():
         waiting_list_display = []
         waiting_tiles_set = []
         print(i)
-        
+
         for j in result_tiles[i]:
-            
+
             waiting_list_num.append(j)
             waiting_list_display.append(TileMapping.tile_mapping[j])
             waiting_tiles_set.append(j)
-            
-
 
             waiting_count = len(waiting_tiles_set) * 4
-            # print(waiting_tiles_set)
-            # print(self.known_tiles)
+
             for tile in []:
                 if tile in waiting_tiles_set:
                     waiting_count -= 1
 
-
-            
         print(waiting_list_display)
         waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}, {waiting_count} left, P(Tzumo): 17.59%\n"
-        # waiting_message += f"discard {TileMapping.tile_mapping[i]} to wait for {waiting_list_display}\n"
 
-        waiting_message_label = tk.Label(root, text=waiting_message, font=('Arial Unicode MS', 32), anchor='w')
+        waiting_message_label = tk.Label(
+            root, text=waiting_message, font=('Arial Unicode MS', 32), anchor='w')
         canvas.create_window(500, 500, window=waiting_message_label)
-            
+
     test1_display = ''.join(TileMapping.tile_mapping[tile] for tile in test1)
-    x_start = 200 
-    y_position = 400 
+    x_start = 200
+    y_position = 400
     x_offset = 50
-    
+
     for i, tile in enumerate(test1_display):
         label = tk.Label(root, text=tile, font=('Arial Unicode MS', 48))
         canvas.create_window(x_start + i * x_offset, y_position, window=label)
 
-    # print(test1_display)
-    
-    
     root.mainloop()
 
 
-
-
-
-
-
-
-    root.mainloop()
 if __name__ == '__main__':
     main()
