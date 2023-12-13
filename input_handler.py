@@ -5,7 +5,7 @@ from tkinter import messagebox
 
 class InputHandler:
     @staticmethod
-    def input_handler(tiles):
+    def input_handler(tiles, is_hand=True):
         if tiles == '':
             raise ValueError('Empty input')
         temp_list = []
@@ -13,7 +13,7 @@ class InputHandler:
             if i.isdigit():
                 temp_list.append(i)
         print(temp_list, tiles)
-        if len(temp_list) != 13:
+        if len(temp_list) != 13 and is_hand == True:
             raise ValueError('Invalid input, should be 13 tiles')
 
         m = list(map(int, ''.join(re.findall(r'\d+(?=m)', tiles))))

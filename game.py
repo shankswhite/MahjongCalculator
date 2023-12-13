@@ -16,17 +16,29 @@ class Game:
     '''
     Create a Mahjong game object.
     Attributes:
-        round: Interger, from 1 to 70
-        river_****, hand_****, mountain, dead_wall: List, A list of tiles in the river, hand, mountain, and dead wall
-        current_player: Integer, from 1 to 4, the current player
-        root: Tkinter root object
-        canvas: Tkinter canvas object
-        tile_labels: Dictionary, a dictionary of tile labels
-        label1_id, label2_id, label3_id, label4_id: List, a list of tile label ids
-        player1_message, player2_message, player3_message, player4_message: Tkinter label objects, a label for each player's message
-        selected_tiles: Dictionary, a dictionary of selected tiles
-        hand1, hand2, hand3, hand4, hand5, hand6, hand7, hand8, hand9, hand10, hand11, hand12, hand13, hand14: Tkinter PhotoImage objects, a list of images for each tile
-        hand_list: List, a list of hand images
+        round: 
+            Interger, from 1 to 70
+        river_****, hand_****, mountain, dead_wall: 
+            List, A list of tiles in the river, hand, mountain, and dead wall
+        current_player: 
+            Integer, from 1 to 4, the current player
+        root: 
+            Tkinter root object
+        canvas: 
+            Tkinter canvas object
+        tile_labels: 
+            Dictionary, a dictionary of tile labels
+        label1_id, label2_id, label3_id, label4_id: 
+            List, a list of tile label ids
+        player1_message, player2_message, player3_message, player4_message: 
+            Tkinter label objects, a label for each player's message
+        selected_tiles: 
+            Dictionary, a dictionary of selected tiles
+        hand1, hand2, hand3, hand4, hand5, hand6, hand7, 
+        hand8, hand9, hand10, hand11, hand12, hand13, hand14: 
+            Tkinter PhotoImage objects, a list of images for each tile
+        hand_list: 
+            List, a list of hand images
     '''
 
     def __init__(self):
@@ -101,8 +113,10 @@ class Game:
         self.hand13 = 0.0
         self.hand14 = 0.0
 
-        self.hand_list = [self.hand1, self.hand2, self.hand3, self.hand4, self.hand5, self.hand6, self.hand7,
-                          self.hand8, self.hand9, self.hand10, self.hand11, self.hand12, self.hand13, self.hand14]
+        self.hand_list = [self.hand1, self.hand2, self.hand3, self.hand4, 
+                          self.hand5, self.hand6, self.hand7, self.hand8, 
+                          self.hand9, self.hand10, self.hand11, self.hand12, 
+                          self.hand13, self.hand14]
 
         self.waiting_message = ''
 
@@ -139,9 +153,9 @@ class Game:
             self.hand_player4 = input_handler.InputHandler.input_handler(
                 "123456789m123s1z")
             self.mountain = input_handler.InputHandler.input_handler(
-                "123456789mz1234")
+                "123446785mz1234", is_hand=False)
             self.dead_wall = input_handler.InputHandler.input_handler(
-                "123456789m123s1z")
+                "123456789m123s1z", is_hand=False)
         elif way == "2":
             self.hand_player1 = input_handler.InputHandler.input_handler(
                 "123456789p778s2s")
@@ -152,11 +166,24 @@ class Game:
             self.hand_player4 = input_handler.InputHandler.input_handler(
                 "44m667p123678s11z")
             self.mountain = input_handler.InputHandler.input_handler(
-                "2s111111111111111111z")
+                "2s111111111111111111z", is_hand=False)
             self.dead_wall = input_handler.InputHandler.input_handler(
-                "123456789m123s1z")
+                "123456789m123s1z", is_hand=False)
             self.river_player2 = input_handler.InputHandler.input_handler(
-                "6699s")
+                "6699s", is_hand=False)
+        elif way == "3":
+            self.hand_player1 = input_handler.InputHandler.input_handler(
+                "123456999p789s1z")
+            self.hand_player2 = input_handler.InputHandler.input_handler(
+                "2647589875612s")
+            self.hand_player3 = input_handler.InputHandler.input_handler(
+                "6475898152637m")
+            self.hand_player4 = input_handler.InputHandler.input_handler(
+                "4675920178642p")
+            self.mountain = input_handler.InputHandler.input_handler(
+                "2s456p111111111111111z", is_hand=False)
+            self.dead_wall = input_handler.InputHandler.input_handler(
+                "123456789m123s1z", is_hand=False)
 
         elif way == "test":
             self.hand_player1 = self.get_player1_hand
@@ -412,6 +439,7 @@ class Game:
 
         evaluated_hand = discard_tile.evaluate_hand(
             sorted(getattr(self, f'hand_player{self.current_player}')))
+        print(evaluated_hand)
 
         min_score_tile = min(evaluated_hand, key=lambda x: x[1])[0]
         if manual == False:
@@ -698,7 +726,7 @@ class Game:
 
 def main():
     game = Game()
-    game.start_game()
+    game.start_game(way='1')
     # print(game.round)
     # print(len(game.hand_player1))
     # print(game.hand_player2)

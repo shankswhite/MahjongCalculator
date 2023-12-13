@@ -47,7 +47,7 @@ def evaluate_hand(hand):
 
 
 # Test the function with the provided example hand
-sorted_hand = [1, 2, 21, 22, 23, 29, 29, 44, 44, 44, 47, 48, 64, 64]
+sorted_hand = [1, 2, 3, 4, 5, 29, 29, 44, 44, 44, 47, 48, 64, 64]
 hand_scores = evaluate_hand(sorted_hand)
 
 
