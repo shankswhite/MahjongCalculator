@@ -1,23 +1,3 @@
-import game_
-
-
-class DiscardTile:
-
-    @staticmethod
-    def discard_tile(player):
-        hand = getattr(game_, f'hand_player{player}')
-    
-
-# game = game.Game()
-# game.start_game()
-# # game.display_layout()
-
-
-# DiscardTile.discard_tile(1)
-
-# Let's define the `evaluate_hand` function based on the provided strategy.
-# The hand is expected to be a list of integers representing tiles.
-
 def evaluate_hand(hand):
     """
     Evaluate the hand and assign scores to each tile based on combinations.
@@ -33,6 +13,7 @@ def evaluate_hand(hand):
     scores = [0] * len(hand)  # Initialize a list of scores with zeros
     pairs = []  # Initialize a list of pairs
     # Helper function to add scores to the list
+
     def add_score(indexes, score):
         for index in indexes:
             scores[index] += score
@@ -62,15 +43,12 @@ def evaluate_hand(hand):
         if scores[i] == 0:
             scores[i] = 100 - tile
 
-
-
     return list(zip(hand, scores))
+
 
 # Test the function with the provided example hand
 sorted_hand = [1, 2, 21, 22, 23, 29, 29, 44, 44, 44, 47, 48, 64, 64]
 hand_scores = evaluate_hand(sorted_hand)
-
-
 
 
 print(hand_scores)

@@ -1,14 +1,15 @@
 import random
 from tile_mapping import TileMapping
 from tkinter import PhotoImage
-from utility import Utility
+from Others.utility import Utility
 import tkinter as tk
 import input_handler
 import check_win
 import discard_tile
 from collections import Counter, defaultdict
-import utility
+import Others.utility as utility
 from math import comb
+from tkinter import messagebox
 
 
 class Game:
@@ -338,18 +339,23 @@ class Game:
             1000, 200, window=self.next_round_auto_button)
 
         def get_input():
-            self.get_player1_hand = input_handler.InputHandler.input_handler(
-                entry1.get())  # Get the text from the entry
-            self.get_player2_hand = input_handler.InputHandler.input_handler(
-                entry2.get())  # Get the text from the entry
-            self.get_player3_hand = input_handler.InputHandler.input_handler(
-                entry3.get())  # Get the text from the entry
-            self.get_player4_hand = input_handler.InputHandler.input_handler(
-                entry4.get())  # Get the text from the entry
-            self.get_mountain = input_handler.InputHandler.input_handler(
-                entry5.get())  # Get the text from the entry
-            self.get_dead_wall = input_handler.InputHandler.input_handler(
-                entry6.get())  # Get the text from the entry
+            try:
+                self.get_player1_hand = input_handler.InputHandler.input_handler(
+                    entry1.get())  # Get the text from the entry
+                self.get_player2_hand = input_handler.InputHandler.input_handler(
+                    entry2.get())  # Get the text from the entry
+                self.get_player3_hand = input_handler.InputHandler.input_handler(
+                    entry3.get())  # Get the text from the entry
+                self.get_player4_hand = input_handler.InputHandler.input_handler(
+                    entry4.get())  # Get the text from the entry
+                self.get_mountain = input_handler.InputHandler.input_handler(
+                    entry5.get())  # Get the text from the entry
+                self.get_dead_wall = input_handler.InputHandler.input_handler(
+                    entry6.get())  # Get the text from the entry
+            except ValueError as e:
+                messagebox.showerror('Error', e)
+
+                Game.start_game(self)
 
             Game.start_game(self, way="test")
 
@@ -499,10 +505,8 @@ class Game:
                         tzumo_prob_list.append(
                             round(normalized_waiting_count / len(self.mountain), 4))
 
-                    print(tzumo_prob_list)
                     cumulative_prob_tzumo = 0
                     remaining_prob_tzumo = 1
-                    print(tzumo_prob_list)
                     for prob in tzumo_prob_list:
                         cumulative_prob_tzumo += remaining_prob_tzumo * prob
                         remaining_prob_tzumo *= (1 - prob)
@@ -528,11 +532,10 @@ class Game:
 
                         ron_prob_list = []
 
-                    print(ron_prob_dict)
                     all_left_tiles = 136 - len(self.known_tiles)
                     for k in range(0, min(14 + 1, waiting_count + 1)):
                         prob_waiting_tile_ron = comb(
-                            waiting_count, k) * comb(all_left_tiles - 
+                            waiting_count, k) * comb(all_left_tiles -
                                                      waiting_count, 14 - k) / comb(all_left_tiles, 14)
                         ron_prob_dict2[k] = prob_waiting_tile_ron
 
@@ -612,8 +615,6 @@ class Game:
                         final_prob = [tzumo1 + tzumo2 + tzumo3 + ron - tzumo1*tzumo2 - tzumo1*tzumo3 - tzumo2*tzumo3 - tzumo1*ron - tzumo2*ron - tzumo3*ron + tzumo1*tzumo2*ron + tzumo1 *
                                       tzumo3*ron + tzumo2*tzumo3*ron - tzumo1*tzumo2*tzumo3*ron for tzumo1, tzumo2, tzumo3, ron in zip(tzumo_prob_list2, tzumo_prob_list2, tzumo_prob_list2, ron_prob_list2)]
 
-                    print("ron", ron_prob_list)
-                    print("final", final_prob)
                     cumulative_prob_ron = 0
                     remaining_prob_ron = 1
                     for prob in ron_prob_list:

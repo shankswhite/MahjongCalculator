@@ -1,6 +1,6 @@
 import random
 from tile_mapping import TileMapping
-from utility import Utility
+from Others.utility import Utility
 import tkinter as tk
 import input_handler
 import check_win
